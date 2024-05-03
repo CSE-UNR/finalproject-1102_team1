@@ -8,7 +8,7 @@ int defaultMenu();
 
 int main(){
 	int choice;
-	
+
 	choice = defaultMenu();
 
 
