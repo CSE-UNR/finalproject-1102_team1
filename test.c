@@ -10,7 +10,7 @@
 
 int defaultMenu();
 void displayCurrentImage(int image[][MAX_COLS], FILE* initialImage, int realRows, int realCols);
-void editImage(int currentImage[][MAX_COLS], int rows, int columns);
+void editImage(int image[][MAX_COLS], int rows, int columns);
 
 int main(){
 
@@ -97,7 +97,7 @@ void displayCurrentImage(int image[][MAX_COLS], FILE* initialImage, int realRows
 
 }
 
-void editImage(int currentImage[][MAX_COLS], int rows, int columns) {
+void editImage(int image[][MAX_COLS], int rows, int columns) {
     int choice;
     char saveorno;
     char y,n;
