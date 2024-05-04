@@ -4,7 +4,7 @@
 
 #include<stdio.h>
 
-#define CURRENT_IMAGE "image.txt"
+#define CURRENT_IMAGE "test_image.txt"
 #define MAX_ROWS 500
 #define MAX_COLS 500
 
