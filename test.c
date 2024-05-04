@@ -10,6 +10,7 @@
 
 int defaultMenu();
 void displayCurrentImage(int image[][MAX_COLS], FILE* initialImage, int realRows, int realCols);
+void editImage(int currentImage[][MAX_COLS], int rows, int columns);
 
 int main(){
 
@@ -96,4 +97,49 @@ void displayCurrentImage(int image[][MAX_COLS], FILE* initialImage, int realRows
 
 }
 
-	
+void editImage(int currentImage[][MAX_COLS], int rows, int columns) {
+    int choice;
+    char saveorno;
+    char y,n;
+
+    printf("**EDITING**\n");
+    printf("1: Crop image\n");
+    printf("2: Dim image\n");
+    printf("3: Brighten image\n");
+    printf("0: Return to main menu\n");
+    printf("Choose from one of the options above: ");
+    scanf("%d", &choice);
+    
+    do {
+    		switch(choice) {
+        	case 1:
+           	//call to display image loop through to add numbers in the upper corner 
+          	//call to cropfunction here 
+          	//display image again 
+         	printf("Would you like to save the file? (y/n) ");scanf(" %c",&saveorno);
+          	if(saveorno==y){
+          	 // saveImage(FILEPOINTER, rows, columns);
+          	 }
+            	break;
+        	case 2:
+		//Call to dim function here 
+		//Display Image
+         	printf("Would you like to save the file? (y/n) ");scanf(" %c",&saveorno);
+          	if(saveorno==y){
+          	 // saveImage(filepointer, rows, columns);
+          	 }
+            break;
+        	case 3:
+            	// Call to brighten function here
+            	// saveImage(currentImage, rows, columns);
+            	//Display Image
+         	printf("Would you like to save the file? (y/n) ");scanf(" %c",&saveorno);
+          	if(saveorno==y){
+          	 // saveImage(filepointer, rows, columns);
+          	 }
+        	default:
+            printf("Invalid choice. Please enter a valid option.\n");
+    } 
+    }while (choice != 0);
+    
+ }	
