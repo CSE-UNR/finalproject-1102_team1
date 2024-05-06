@@ -13,15 +13,19 @@
 int defaultMenu();
 void displayCurrentImage(int realRows, int realCols,int image[][realCols], FILE* initialImage);
 void newImage(int row, int cols, int image[][cols], FILE* newPhoto);
-void editImage(FILE* editImages, int image[][MAX_COLS], int rows, int columns);
-int rowSize(FILE* Image, int Rows, int Cols, int size[][Cols]);
-
+//int rowSize(FILE* Image, int Rows, int Cols, int size[][Cols]);
 int sizeOfArray(FILE* currentFile, int row, int* cols, int enteredImage[][MAX_COLS]);
+void editImage(FILE* editImages, int image[][MAX_COLS], int rows, int columns);
+void dimImage(FILE* dimImage, int image[][MAX_COLS], int row, int *cols);
+void brightenImage(FILE* brightenImage, int image[][MAX_COLS], int row, int *cols);
+
 void saveImage(FILE* saveEditedImage);
 
 int main(){
 
 	int image[MAX_ROWS][MAX_COLS], choice, rows, cols;
+	int row=0;
+	
 	
 	FILE* currentImage_fp;
 	
@@ -189,7 +193,7 @@ void displayCurrentImage(int realRows, int realCols,int image[][realCols], FILE*
 	}
 }
 
-void editImage(FILE* editImages, int image[][MAX_COLS], int rows, int columns) {
+void editImage(FILE* editImages, int image[][MAX_COLS], int rows, int cols) {
     int choice;
     char saveorno;
     char y,n;
@@ -220,7 +224,7 @@ void editImage(FILE* editImages, int image[][MAX_COLS], int rows, int columns) {
         	case 2:
 		//Call to dim function here 
 		//Display Image
-         		
+         		dimImage(editImages,image,rows,&cols);
          		saveImage(editImages);
           		 
           	 
@@ -229,6 +233,7 @@ void editImage(FILE* editImages, int image[][MAX_COLS], int rows, int columns) {
             	// Call to brighten function here
             	// saveImage(currentImage, rows, columns);
             	//Display Image
+            		brightenImage(editImages,image,rows, &cols);
          		saveImage(editImages);
           	 
           	 case 0:
@@ -242,6 +247,39 @@ void editImage(FILE* editImages, int image[][MAX_COLS], int rows, int columns) {
     }while (choice != 0);
     
 }
+
+
+void dimImage(FILE* dimImage, int image[][MAX_COLS], int row, int *cols) {
+	dimImage = fopen(CURRENT_IMAGE, "r");
+	
+	if(dimImage == NULL){
+		printf("Unable to open file. Non-existent.\n");
+	}		
+		for(int i = 0; i < row; i++){
+			for(int j = 0; j < *cols; j++){
+				image[i][j]--;
+			}
+		}
+		fclose(dimImage);
+		
+	}
+
+
+void brightenImage(FILE* brightenImage, int image[][MAX_COLS], int row, int *cols) {
+	brightenImage = fopen(CURRENT_IMAGE, "r");
+	
+	if(brightenImage == NULL){
+		printf("Unable to open file. Non-existent.\n");
+	}		
+		for(int i = 0; i < row; i++){
+			for(int j = 0; j < *cols; j++){
+				image[i][j]++;
+			}
+		}
+		fclose(brightenImage);
+		
+	}
+
 
 void saveImage(FILE* saveEditedImage){
 	
