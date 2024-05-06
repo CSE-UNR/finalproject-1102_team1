@@ -5,26 +5,24 @@
 #include<stdio.h>
 #include<stdbool.h>
 
-#define CURRENT_IMAGE "test_image.txt"
-#define MAX_ROWS 500
-#define MAX_COLS 500
+#define CURRENT_IMAGE "image.txt"
+#define MAX_ROWS 100
+#define MAX_COLS 100
 #define MAX_FILE_NAME 50
 
 int defaultMenu();
 void displayCurrentImage(int realRows, int realCols,int image[][realCols], FILE* initialImage);
 void newImage(int row, int cols, int image[][cols], FILE* newPhoto);
-//int rowSize(FILE* Image, int Rows, int Cols, int size[][Cols]);
 int sizeOfArray(FILE* currentFile, int row, int* cols, int enteredImage[][MAX_COLS]);
 void editImage(FILE* editImages, int image[][MAX_COLS], int rows, int columns);
 void dimImage(FILE* dimImage, int image[][MAX_COLS], int row, int *cols);
-void brightenImage(FILE* brightenImage, int image[][MAX_COLS], int row, int *cols);
-
-void saveImage(FILE* saveEditedImage);
+void brightenImage(FILE* brightenImage, int image[][MAX_COLS], int row, int cols);
+void saveImage(FILE* saveEditedImage, int row, int cols, int image[][cols]);
+	
 
 int main(){
 
 	int image[MAX_ROWS][MAX_COLS], choice, rows, cols;
-	int row=0;
 	
 	
 	FILE* currentImage_fp;
@@ -36,10 +34,12 @@ int main(){
 		switch(choice){
 		
 			case 1:
+				rows = sizeOfArray(currentImage_fp, rows, &cols, image);
 				newImage(rows, cols, image, currentImage_fp);
 			break;
 			
 			case 2:
+				rows = sizeOfArray(currentImage_fp, rows, &cols, image);
 				displayCurrentImage(rows, cols, image, currentImage_fp);
 			break;
 			
@@ -92,11 +92,7 @@ void newImage(int row, int cols, int image[][cols], FILE* newPhoto){
 		printf("Unable to open file. Non-existent.\n");
 	}
 	else{
-		//call for size of array to get size of row & cols
-		// hardcoded for now
 		
-		row = 12;
-		cols = 21;
 		
 		for(int i = 0; i < row; i++){
 			for(int j = 0; j < cols; j++){
@@ -113,30 +109,31 @@ void newImage(int row, int cols, int image[][cols], FILE* newPhoto){
 }
 
 int sizeOfArray(FILE* currentFile, int row, int* cols, int enteredImage[][MAX_COLS]){
-	char temp[MAX_ROWS][MAX_COLS];
-	row = 0; 
-	int colsCount = 0;
+	
+	char temp[MAX_COLS];
+	int Cols = 0, rows = 0;;
+	int index;
+	
 	currentFile = fopen(CURRENT_IMAGE, "r");
 	if(currentFile == NULL){
 		printf("Unable to open file. Non-existent.\n");
 	}
 	else{
-	
-
-	
-	
-		while(fscanf(currentFile, "%d", &enteredImage[row][MAX_ROWS]) == 1){
-			row++;
-		}
-		while(fscanf(currentFile, "%c", &temp[row][MAX_ROWS]) == 0){
-			colsCount++;
-	
-		
+		while(fgets(temp, sizeof(temp), currentFile)){
+			rows++;
+			index = 0;
+			Cols = 0;
+			
+			while(temp[index] != '\0'){
+				if(temp[index] != ' ' || temp[index] != '\n'){
+					Cols++;
+				}
+				index++;
+			}
 		}
 		fclose(currentFile);
-		*cols = colsCount;
-	
-	return row;
+		*cols = Cols;
+		return rows;
 	}
 }
 	
@@ -146,8 +143,6 @@ int sizeOfArray(FILE* currentFile, int row, int* cols, int enteredImage[][MAX_CO
 
 void displayCurrentImage(int realRows, int realCols,int image[][realCols], FILE* initialImage){
 	
-	
-	//work in progress 
 	char temp;
 	int type;
 
@@ -158,36 +153,40 @@ void displayCurrentImage(int realRows, int realCols,int image[][realCols], FILE*
 		printf("Unable to open file. Non-existent.\n");
 	}
 	else{
-	 	realRows = 12;
-		realCols = 21;
-	
-		//while(fscanf(initialImage, "%c", &temp) == 1){
-	
-			for(int i = 0; i < realRows; i++){
-				for(int j = 0; j < realCols; j++){
-					fscanf(initialImage, "%d", &image[i][j]);
-				}
-			}	
-	
-		//}
+	 	for(int i= 0; i < realRows; i++){
+			for(int j = 0; j < realCols; j++){
+				
+				do{
+					fscanf(initialImage, "%c", &temp);
+				
+				}while(temp == '\n' && temp == ' ');
+				
+				image[i][j] = temp - '0';
+				
+			}
+		}
+		
 		fclose(initialImage);
 		for(int i = 0; i < realRows; i++){
 				for(int j = 0; j < realCols; j++){
-					//type = image[i][j];
-					if (image[i][j] = 0){
+				
+					type = image[i][j];
+					
+					if (type == 0){
 						printf(" ");
-					}else if(image[i][j] = 1){
+					}else if(type == 1){
 						printf(".");
-					}else if(image[i][j] = 2){
+					}else if(type == 2){
 						printf("o");
-					}else if(image[i][j] = 3){
+					}else if(type == 3){
 						printf("O");
-					}else if(image[i][j] = 4){
+					}else if(type == 4){
 						printf("0");
 					}
 				}
 			printf("\n");
 		}
+		
 	
 		
 	}
@@ -197,6 +196,7 @@ void editImage(FILE* editImages, int image[][MAX_COLS], int rows, int cols) {
     int choice;
     char saveorno;
     char y,n;
+    
     
     do {
    	 printf("\n");
@@ -215,7 +215,7 @@ void editImage(FILE* editImages, int image[][MAX_COLS], int rows, int cols) {
            	//call to display image loop through to add numbers in the upper corner 
           	//call to cropfunction here 
           	//display image again
-          		saveImage(editImages);
+          		//saveImage(editImages);
           	 // saveImage(FILEPOINTER, rows, columns);
           	 	//saveImage(
           		// }
@@ -225,7 +225,8 @@ void editImage(FILE* editImages, int image[][MAX_COLS], int rows, int cols) {
 		//Call to dim function here 
 		//Display Image
          		dimImage(editImages,image,rows,&cols);
-         		saveImage(editImages);
+         		displayCurrentImage(rows, cols, image, editImages);
+         		saveImage(editImages, rows, cols, image);
           		 
           	 
             		break;
@@ -233,9 +234,12 @@ void editImage(FILE* editImages, int image[][MAX_COLS], int rows, int cols) {
             	// Call to brighten function here
             	// saveImage(currentImage, rows, columns);
             	//Display Image
-            		brightenImage(editImages,image,rows, &cols);
-         		saveImage(editImages);
-          	 
+            		
+            		rows = sizeOfArray(editImages, rows, &cols, image);
+            		brightenImage(editImages,image,rows, cols);
+            		//displayCurrentImage(rows, cols, image, editImages);
+         		saveImage(editImages, rows, cols, image);
+	
           	 case 0:
           	 	
           	 	break;
@@ -265,23 +269,25 @@ void dimImage(FILE* dimImage, int image[][MAX_COLS], int row, int *cols) {
 	}
 
 
-void brightenImage(FILE* brightenImage, int image[][MAX_COLS], int row, int *cols) {
+void brightenImage(FILE* brightenImage, int image[][MAX_COLS], int row, int cols) {
 	brightenImage = fopen(CURRENT_IMAGE, "r");
 	
 	if(brightenImage == NULL){
 		printf("Unable to open file. Non-existent.\n");
 	}		
 		for(int i = 0; i < row; i++){
-			for(int j = 0; j < *cols; j++){
+			for(int j = 0; j < cols; j++){
 				image[i][j]++;
 			}
+			printf("\n");
 		}
 		fclose(brightenImage);
+		
 		
 	}
 
 
-void saveImage(FILE* saveEditedImage){
+void saveImage(FILE* saveEditedImage, int row, int cols, int image[][cols]){
 	
 	char editImage[MAX_FILE_NAME+1], saveorno;
 	printf("\n");
@@ -302,15 +308,10 @@ void saveImage(FILE* saveEditedImage){
 			printf("Unable to open file. Non-existent.\n");
 		}
 		else{
-		//call for size of array to get size of row & cols
-		// hardcoded for now
-			int rows = 12;
-			int col = 21;
-			int editedImage[rows][col];
-			
-			for(int i = 0; i < rows; i++){
-				for(int j = 0; j < col; j++){
-					fprintf(saveEditedImage, "%d", editedImage[i][j]);
+		
+			for(int i = 0; i < row; i++){
+				for(int j = 0; j < cols; j++){
+					fprintf(saveEditedImage, "%d", image[i][j]);
 				}
 				fprintf(saveEditedImage,"\n");
 			}
