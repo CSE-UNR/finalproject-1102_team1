@@ -13,10 +13,11 @@
 int defaultMenu();
 void displayCurrentImage(int realRows, int realCols,int image[][realCols], FILE* initialImage);
 void newImage(int row, int cols, int image[][cols], FILE* newPhoto);
-void editImage(int image[][MAX_COLS], int rows, int columns);
+void editImage(FILE* editImages, int image[][MAX_COLS], int rows, int columns);
 int rowSize(FILE* Image, int Rows, int Cols, int size[][Cols]);
 
 int sizeOfArray(FILE* currentFile, int row, int* cols, int enteredImage[][MAX_COLS]);
+void saveImage(FILE* saveEditedImage);
 
 int main(){
 
@@ -39,9 +40,7 @@ int main(){
 			break;
 			
 			case 3:
-				rows = sizeOfArray(currentImage_fp, rows, &cols, image);
-				printf("%d rows.\n", rows);
-				printf("%d cols.\n", cols);
+				editImage(currentImage_fp, image, rows, cols);
 			break;
 			
 			case 0:
@@ -190,49 +189,107 @@ void displayCurrentImage(int realRows, int realCols,int image[][realCols], FILE*
 	}
 }
 
-void editImage(int image[][MAX_COLS], int rows, int columns) {
+void editImage(FILE* editImages, int image[][MAX_COLS], int rows, int columns) {
     int choice;
     char saveorno;
     char y,n;
-
-    printf("**EDITING**\n");
-    printf("1: Crop image\n");
-    printf("2: Dim image\n");
-    printf("3: Brighten image\n");
-    printf("0: Return to main menu\n");
-    printf("Choose from one of the options above: ");
-    scanf("%d", &choice);
     
     do {
+   	 printf("\n");
+   	 printf("**EDITING**\n");
+   	 printf("1: Crop image\n");
+   	 printf("2: Dim image\n");
+   	 printf("3: Brighten image\n");
+    	 printf("0: Return to main menu\n");
+    	 printf("\n");
+    	 printf("Choose from one of the options above: ");
+    	 scanf("%d", &choice);
+    
+    
     		switch(choice) {
-        	case 1:
+        		case 1:
            	//call to display image loop through to add numbers in the upper corner 
           	//call to cropfunction here 
-          	//display image again 
-         	printf("Would you like to save the file? (y/n) ");scanf(" %c",&saveorno);
-          	if(saveorno==y){
+          	//display image again
+          		saveImage(editImages);
           	 // saveImage(FILEPOINTER, rows, columns);
-          	 }
-            	break;
+          	 	//saveImage(
+          		// }
+          	 
+            		break;
         	case 2:
 		//Call to dim function here 
 		//Display Image
-         	printf("Would you like to save the file? (y/n) ");scanf(" %c",&saveorno);
-          	if(saveorno==y){
-          	 // saveImage(filepointer, rows, columns);
-          	 }
-            break;
+         		
+         		saveImage(editImages);
+          		 
+          	 
+            		break;
         	case 3:
             	// Call to brighten function here
             	// saveImage(currentImage, rows, columns);
             	//Display Image
-         	printf("Would you like to save the file? (y/n) ");scanf(" %c",&saveorno);
-          	if(saveorno==y){
-          	 // saveImage(filepointer, rows, columns);
-          	 }
+         		saveImage(editImages);
+          	 
+          	 case 0:
+          	 	
+          	 	break;
         	default:
-            printf("Invalid choice. Please enter a valid option.\n");
-    } 
+           		printf("Invalid choice. Please enter a valid option.\n");
+           		printf("Choose from one of the options above: ");
+             		scanf("%d", &choice);
+   	} 
     }while (choice != 0);
     
- }	
+}
+
+void saveImage(FILE* saveEditedImage){
+	
+	char editImage[MAX_FILE_NAME+1], saveorno;
+	printf("\n");
+	printf("Would you like to save the file? (y/n) ");
+	scanf(" %c",&saveorno);
+	
+	if(saveorno != 'Y' && saveorno != 'y'){
+		printf("\n");
+		printf("Save not initiated\n");
+	}
+	else{
+		printf("Where would you like to save this masterpiece?: ");
+		scanf("%s", editImage);
+	
+		saveEditedImage = fopen(editImage, "w");
+		
+		if(saveEditedImage == NULL){
+			printf("Unable to open file. Non-existent.\n");
+		}
+		else{
+		//call for size of array to get size of row & cols
+		// hardcoded for now
+			int rows = 12;
+			int col = 21;
+			int editedImage[rows][col];
+			
+			for(int i = 0; i < rows; i++){
+				for(int j = 0; j < col; j++){
+					fprintf(saveEditedImage, "%d", editedImage[i][j]);
+				}
+				fprintf(saveEditedImage,"\n");
+			}
+			fclose(saveEditedImage);
+			printf("\n");
+			printf("Successfully saved new image!\n");
+			printf("\n");
+		
+		}
+	}
+}
+
+
+
+
+
+
+
+
+	
