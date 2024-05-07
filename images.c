@@ -5,7 +5,7 @@
 #include<stdio.h>
 #include<stdbool.h>
 
-#define CURRENT_IMAGE "test_image.txt"
+
 #define MAX_ROWS 100
 #define MAX_COLS 100
 #define MAX_FILE_NAME 50
@@ -90,6 +90,7 @@ void newImage(char file[],int row, int cols, int image[][MAX_COLS], FILE* newPho
 	newPhoto = fopen(file, "r");
 	
 	if(newPhoto == NULL){
+		printf("\n");
 		printf("Unable to open file. Non-existent.\n");
 		printf("\n");
 		return;
@@ -119,8 +120,6 @@ int sizeOfArray(char file[], FILE* currentFile, int row, int* cols, int enteredI
 	
 	currentFile = fopen(file, "r");
 	if(currentFile == NULL){
-		printf("Unable to open file. Non-existent.\n");
-		printf("\n");
 		return 0;
 	}
 	else{
@@ -155,6 +154,7 @@ void displayCurrentImage(char file[], int rows, int *cols, int image[][MAX_COLS]
 	initialImage = fopen(file, "r");
 	
 	if(initialImage == NULL){
+		printf("\n");
 		printf("Unable to open file. Non-existent.\n");
 		printf("\n");
 		return;
@@ -200,6 +200,23 @@ void displayCurrentImage(char file[], int rows, int *cols, int image[][MAX_COLS]
 }
 
 void editImage(char file[], FILE* editImages, int image[][MAX_COLS], int rows, int cols) {
+    
+    
+    	editImages = fopen(file, "r");
+    	
+    	if(editImages == NULL){
+    		printf("\n");
+		printf("Unable to edit image. Non-existent.\n");
+		printf("\n");
+		return;
+	}
+	else{
+    
+    
+    
+    
+    
+    
     int choice;
     char saveorno;
     char y,n;
@@ -255,6 +272,8 @@ void editImage(char file[], FILE* editImages, int image[][MAX_COLS], int rows, i
              		scanf("%d", &choice);
    		} 
    	}while(choice != 0);
+   	
+   	}
    
     
 }
