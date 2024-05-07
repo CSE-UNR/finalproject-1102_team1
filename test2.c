@@ -15,6 +15,7 @@ void displayCurrentImage(int rows, int *cols, int image[][MAX_COLS], FILE* initi
 void newImage(int row, int cols, int image[][cols], FILE* newPhoto);
 int sizeOfArray(FILE* currentFile, int row, int* cols, int enteredImage[][MAX_COLS]);
 void editImage(FILE* editImages, int image[][MAX_COLS], int rows, int columns);
+void cropImage(FILE* cropImagefp,int image[][MAX_COLS], int rows, int *cols);
 void dimImage(FILE* dimImagefp, int image[][MAX_COLS], int rows, int *cols);
 void brightenImage(FILE* brightenImagefp, int image[][MAX_COLS], int rows, int *cols);
 void saveImage(FILE* saveEditedImage, int row, int cols, int image[][cols]);
@@ -111,7 +112,7 @@ void newImage(int row, int cols, int image[][MAX_COLS], FILE* newPhoto){
 int sizeOfArray(FILE* currentFile, int row, int* cols, int enteredImage[][MAX_COLS]){
 	
 	char temp[MAX_COLS];
-	int Cols =0, rows = 0;
+	int Cols = 0, rows = 0;;
 	int index;
 	
 	currentFile = fopen(CURRENT_IMAGE, "r");
@@ -131,7 +132,6 @@ int sizeOfArray(FILE* currentFile, int row, int* cols, int enteredImage[][MAX_CO
 				index++;
 			}
 		}
-		
 		fclose(currentFile);
 		*cols = Cols;
 		return rows;
@@ -213,13 +213,11 @@ void editImage(FILE* editImages, int image[][MAX_COLS], int rows, int cols) {
     
     		switch(choice) {
         		case 1:
-           	//call to display image loop through to add numbers in the upper corner 
-          	//call to cropfunction here 
-          	//display image again
-          		//saveImage(editImages);
-          	 // saveImage(FILEPOINTER, rows, columns);
-          	 	//saveImage(
-          		// }
+           	
+          		rows = sizeOfArray(editImages, rows, &cols, image);
+         		cropImage(editImages,image,rows,&cols);
+         		saveImage(editImages, rows, cols, image);
+          		
           	 
             		break;
         	case 2:
@@ -250,6 +248,85 @@ void editImage(FILE* editImages, int image[][MAX_COLS], int rows, int cols) {
    	} 
    
     
+}
+
+
+
+void cropImage(FILE *cropImagefp, int image[][MAX_COLS], int rows, int *cols) {
+    int startRow, endRow, startCol, endCol;
+
+    cropImagefp = fopen(CURRENT_IMAGE, "r");
+    if (cropImagefp == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
+
+    printf("The image you want to crop is %d x %d.\n", rows, *cols);
+    printf("The row and column values start in the upper lefthand corner.\n\n");
+
+    printf("Which column do you want to be the new left side? ");
+    scanf("%d", &startCol);
+
+    printf("Which column do you want to be the new right side? ");
+    scanf("%d", &endCol);
+
+    printf("Which row do you want to be the new top? ");
+    scanf("%d", &startRow);
+
+    printf("Which row do you want to be the new bottom? ");
+    scanf("%d", &endRow);
+
+    // Adjust the number of columns based on the cropping operation
+    *cols = endCol - startCol + 1;
+
+    // Create a new array to store the cropped image
+    int croppedImage[MAX_ROWS][MAX_COLS];
+    // Copy the cropped portion of the image to the new array
+    for (int i = startRow; i <= endRow; i++) {
+        for (int j = startCol; j <= endCol; j++) {
+            croppedImage[i - startRow][j - startCol] = image[i][j];
+        }
+    }
+
+    // Copy the cropped image back to the original array
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < *cols; j++) {
+            image[i][j] = croppedImage[i][j];
+        }
+    }
+    
+    char temp; 
+    
+    for(int i = 0; i < rows; i++){
+        for(int j = 0; j < *cols; j++){
+            do {
+                fscanf(cropImagefp, "%c", &temp);
+            } while(temp == '\n' && temp == ' ');
+            image[i][j] = temp - '0';
+        }
+        
+         fclose(cropImagefp);
+
+    // Print the cropped image
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < *cols; j++) {
+            int type = image[i][j];
+            if (type == 0) {
+                printf(" ");
+            } else if (type == 1) {
+                printf(".");
+            } else if (type == 2) {
+                printf("o");
+            } else if (type == 3) {
+                printf("O");
+            } else if (type == 4) {
+                printf("0");
+            }
+        }
+        printf("\n");
+    }
+}
+ 
 }
 
 
