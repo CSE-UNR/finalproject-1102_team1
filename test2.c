@@ -126,7 +126,7 @@ int sizeOfArray(FILE* currentFile, int row, int* cols, int enteredImage[][MAX_CO
 			Cols = 0;
 			
 			while(temp[index] != '\0'){
-				if(temp[index] != ' ' || temp[index] != '\n'){
+				if(temp[index] != ' ' && temp[index] != '\n'){
 					Cols++;
 				}
 				index++;

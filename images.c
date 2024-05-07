@@ -129,7 +129,7 @@ int sizeOfArray(char file[], FILE* currentFile, int row, int* cols, int enteredI
 			Cols = 0;
 			
 			while(temp[index] != '\0'){
-				if(temp[index] != ' ' || temp[index] != '\n'){
+				if(temp[index] != ' ' && temp[index] != '\n'){
 					Cols++;
 				}
 				index++;
@@ -223,7 +223,7 @@ void editImage(char file[], FILE* editImages, int image[][MAX_COLS], int rows, i
     char y,n;
     
     
-    do{
+   
    	 printf("\n");
    	 printf("**EDITING**\n");
    	 printf("1: Crop image\n");
@@ -247,8 +247,6 @@ void editImage(char file[], FILE* editImages, int image[][MAX_COLS], int rows, i
           	 
             		break;
         	case 2:
-		//Call to dim function here 
-		//Display Image
 			rows = sizeOfArray(file, editImages, rows, &cols, image);
          		dimImage(file, editImages,image,rows,&cols);
          		saveImage(file, editImages, rows, cols, image);
@@ -256,9 +254,6 @@ void editImage(char file[], FILE* editImages, int image[][MAX_COLS], int rows, i
           	 
             		break;
         	case 3:
-            	// Call to brighten function here
-            	// saveImage(currentImage, rows, columns);
-            	//Display Image
             		
             		rows = sizeOfArray(file, editImages, rows, &cols, image);
             		brightenImage(file, editImages,image,rows, &cols);
@@ -272,7 +267,7 @@ void editImage(char file[], FILE* editImages, int image[][MAX_COLS], int rows, i
            		printf("Choose from one of the options above: ");
              		scanf("%d", &choice);
    		} 
-   	}while(choice != 0);
+   	
    	
    	}
    
@@ -289,8 +284,7 @@ void dimImage(char file[], FILE* dimImagefp, int image[][MAX_COLS], int rows, in
         printf("Unable to open file. Non-existent.\n");
         return;
     }   
-
-    // Read the image data from the file and store it in the image array
+    
     for(int i = 0; i < rows; i++){
         for(int j = 0; j < *cols; j++){
             do {
@@ -300,7 +294,7 @@ void dimImage(char file[], FILE* dimImagefp, int image[][MAX_COLS], int rows, in
         }
     }
 
-    // Decrement the values in the image array
+   
     for(int i = 0; i < rows; i++){
         for(int j = 0; j < *cols; j++){
         if (image[i][j]==0){
@@ -311,7 +305,7 @@ void dimImage(char file[], FILE* dimImagefp, int image[][MAX_COLS], int rows, in
         }
     }
 
-    // Print the modified image
+    
     for(int i = 0; i < rows; i++){
         for(int j = 0; j < *cols; j++){
             newtype = image[i][j];
@@ -330,7 +324,7 @@ void dimImage(char file[], FILE* dimImagefp, int image[][MAX_COLS], int rows, in
         printf("\n");
     }
 
-    fclose(dimImagefp); // Close the file after usage
+    fclose(dimImagefp); 
 }
 
 
@@ -345,7 +339,7 @@ void brightenImage(char file[], FILE* brightenImagefp, int image[][MAX_COLS], in
         return;
     }   
 
-    // Read the image data from the file and store it in the image array
+    
     for(int i = 0; i < rows; i++){
         for(int j = 0; j < *cols; j++){
             do {
@@ -355,7 +349,7 @@ void brightenImage(char file[], FILE* brightenImagefp, int image[][MAX_COLS], in
         }
     }
 
-    // Decrement the values in the image array
+    
     for(int i = 0; i < rows; i++){
         for(int j = 0; j < *cols; j++){
         if (image[i][j]==4){
@@ -366,7 +360,7 @@ void brightenImage(char file[], FILE* brightenImagefp, int image[][MAX_COLS], in
         }
     }
 
-    // Print the modified image
+   
     for(int i = 0; i < rows; i++){
         for(int j = 0; j < *cols; j++){
             type2 = image[i][j];
@@ -385,7 +379,7 @@ void brightenImage(char file[], FILE* brightenImagefp, int image[][MAX_COLS], in
         printf("\n");
     }
 
-    fclose(brightenImagefp); // Close the file after usage
+    fclose(brightenImagefp); 
 }
 
 
