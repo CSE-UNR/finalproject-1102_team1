@@ -1,9 +1,12 @@
 //Alexus Rowe and Ervin Martinez//
-
+//Professor: Erin Keith
+//CS 135-1102
+//Final Group Project
+//7 May 2024
 
 
 #include<stdio.h>
-#include<stdbool.h>
+
 
 
 #define MAX_ROWS 100
@@ -15,6 +18,7 @@ void displayCurrentImage(char file[], int rows, int *cols, int image[][MAX_COLS]
 void newImage(char file[], int row, int cols, int image[][cols], FILE* newPhoto);
 int sizeOfArray(char file[],FILE* currentFile, int row, int* cols, int enteredImage[][MAX_COLS]);
 void editImage(char file[], FILE* editImages, int image[][MAX_COLS], int rows, int columns);
+void cropImage(int image[][MAX_COLS], int cropped[][MAX_COLS], int startRow, int startCol,int endRow, int endCol,int rows, int cols);
 void dimImage(char file[], FILE* dimImagefp, int image[][MAX_COLS], int rows, int *cols);
 void brightenImage(char file[], FILE* brightenImagefp, int image[][MAX_COLS], int rows, int *cols);
 void saveImage(char file[],FILE* saveEditedImage, int row, int cols, int image[][cols]);
@@ -41,6 +45,7 @@ int main(){
 			
 			case 2:
 				rows = sizeOfArray(file, currentImage_fp, rows, &cols, image);
+				printf("\n");
 				displayCurrentImage(file, rows, &cols, image, currentImage_fp);
 			break;
 			
@@ -75,7 +80,7 @@ int defaultMenu(){
 	printf("0. Exit                 |\n");
 	printf("**************************\n");
 	printf("\n");
-	printf("What would you like?: ");
+	printf("Choose from one of the options above: ");
 	scanf("%d", &menuChoice);
 	
 	return menuChoice;
@@ -105,7 +110,7 @@ void newImage(char file[],int row, int cols, int image[][MAX_COLS], FILE* newPho
 		}
 		fclose(newPhoto);
 		printf("\n");
-		printf("Successfully loaded new image!\n");
+		printf("Image successfully loaded!\n");
 		printf("\n");
 
 	}
@@ -167,7 +172,7 @@ void displayCurrentImage(char file[], int rows, int *cols, int image[][MAX_COLS]
 				do{
 					fscanf(initialImage, "%c", &temp);
 				
-				}while(temp == '\n' && temp == ' ');
+				}while(temp == '\n' || temp == ' ');
 				
 				image[i][j] = temp - '0';
 				
@@ -194,7 +199,7 @@ void displayCurrentImage(char file[], int rows, int *cols, int image[][MAX_COLS]
 				}
 			printf("\n");
 		}
-		
+		printf("\n");
 	
 		
 	}
@@ -213,14 +218,9 @@ void editImage(char file[], FILE* editImages, int image[][MAX_COLS], int rows, i
 	}
 	else{
     
-    
-    
-    
-    
-    
-    int choice;
-    char saveorno;
-    char y,n;
+	int choice;
+	char saveorno;
+	char y,n;
     
     
    
@@ -237,14 +237,47 @@ void editImage(char file[], FILE* editImages, int image[][MAX_COLS], int rows, i
     		
     		switch(choice) {
         		case 1:
-           	//call to display image loop through to add numbers in the upper corner 
-          	//call to cropfunction here 
-          	//display image again
-          		//saveImage(editImages);
-          	 // saveImage(FILEPOINTER, rows, columns);
-          	 	//saveImage(
-          		// }
-          	 
+   				displayCurrentImage(file, rows, &cols, image, editImages);
+              			int croppedImage[MAX_ROWS][MAX_COLS];
+				int startCol,endCol,startRow,endRow;
+
+    				printf("The image you want to crop is %d x %d.\n", rows, cols-1);
+    				printf("The row and column values start in the upper lefthand corner.\n\n");
+
+    				printf("Which column do you want to be the new left side? ");
+    				scanf("%d", &startCol);
+				while(startCol<1 || startCol>= cols){
+   		 			printf("Invalid column value. Choose a value between 1 and %d: ", cols-1);
+		 			scanf("%d", &startCol);
+    				}
+    				printf("Which column do you want to be the new right side? ");
+    				scanf("%d", &endCol);
+    				while(endCol<startCol || endCol>= cols){
+    					printf("Invalid column value. Choose a value between %d and %d: ",startCol, cols-1);
+    					scanf("%d", &endCol);
+    				}
+
+    				printf("Which row do you want to be the new top? ");
+    				scanf("%d", &startRow);
+				while(startRow<1 || startRow>= rows){
+   		 			printf("Invalid row value. Choose a value between 1 and %d: ", rows-1);
+		 			scanf("%d", &startRow);
+    				}
+
+    				printf("Which row do you want to be the new bottom? ");
+    				scanf("%d", &endRow);
+   				while(endRow<startRow || endRow>= rows){
+    					printf("Invalid row value. Choose a value between %d and %d: ", startRow, rows-1);
+    					scanf("%d", &endRow);
+    				}
+   
+
+   
+    				cols = endCol - startCol + 1;
+    				rows=endRow-startRow+1;
+          		
+         			cropImage(image, croppedImage,startRow, startCol,endRow, endCol,rows, cols);
+         			saveImage(file, editImages, rows, cols, image);
             		break;
         	case 2:
 			rows = sizeOfArray(file, editImages, rows, &cols, image);
@@ -271,9 +304,41 @@ void editImage(char file[], FILE* editImages, int image[][MAX_COLS], int rows, i
    	
    	}
    
-    
+    fclose(editImages);
 }
 
+void cropImage(int image[][MAX_COLS],int croppedImage[][MAX_COLS], int startRow, int startCol,int endRow, int endCol, int rows, int cols) {
+   
+    
+    
+
+    for (int i = startRow; i <= endRow; i++) {
+        for (int j = startCol; j <= endCol; j++) {
+            croppedImage[i - startRow][j - startCol] = image[i][j];
+        }
+    }
+
+   for(int i = startRow; i <= endRow; i++){
+        for(int j = startCol; j <= endCol; j++){
+           int newtype = image[i][j];
+            if (newtype == 0){
+                printf(" ");
+            } else if(newtype == 1){
+                printf(".");
+            } else if(newtype == 2){
+                printf("o");
+            } else if(newtype == 3){
+                printf("O");
+            } else if(newtype == 4){
+                printf("0");
+            }
+        }
+        printf("\n");
+    }
+  
+    
+   
+}
 
 void dimImage(char file[], FILE* dimImagefp, int image[][MAX_COLS], int rows, int *cols) {
     int newtype;
@@ -289,7 +354,7 @@ void dimImage(char file[], FILE* dimImagefp, int image[][MAX_COLS], int rows, in
         for(int j = 0; j < *cols; j++){
             do {
                 fscanf(dimImagefp, "%c", &newtemp);
-            } while(newtemp == '\n' && newtemp == ' ');
+            } while(newtemp == '\n' || newtemp == ' ');
             image[i][j] = newtemp - '0';
         }
     }
@@ -344,7 +409,7 @@ void brightenImage(char file[], FILE* brightenImagefp, int image[][MAX_COLS], in
         for(int j = 0; j < *cols; j++){
             do {
                 fscanf(brightenImagefp, "%c", &temp3);
-            } while(temp3 == '\n' && temp3 == ' ');
+            } while(temp3 == '\n' || temp3 == ' ');
             image[i][j] = temp3 - '0';
         }
     }
@@ -394,7 +459,7 @@ void saveImage(char file[], FILE* saveEditedImage, int row, int cols, int image[
 	
 	if(saveorno != 'Y' && saveorno != 'y'){
 		printf("\n");
-		printf("Save not initiated\n");
+		printf("Save not initiated.\n"); printf("\n");
 	}
 	else{
 		printf("Where would you like to save this masterpiece?: ");
